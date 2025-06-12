@@ -965,18 +965,7 @@ LRESULT CMainDlg::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOO
 		bHandled = true;
 		m_pFileList->SetNavigationMode(Helpers::NM_LoopSubDirectories);
 		GotoImage(POS_Next);
-	} else if (wParam >= '1' && wParam <= '9' && (!bShift || bCtrl)) {
-		// Start the slideshow
-		bHandled = true;
-		int nValue = (int)wParam - '1' + 1;
-		if (bCtrl && bShift) {
-			nValue *= 10; // 1/100 seconds
-		} else if (bCtrl) {
-			nValue *= 100; // 1/10 seconds
-		} else {
-			nValue *= 1000; // seconds
-		}
-		StartMovieMode(1000.0/nValue);
+// EDIT: Remove 'Start the slideshow' block
 	} else if (wParam == VK_F1) {
 		bHandled = true;
 		ExecuteCommand(IDM_HELP);
