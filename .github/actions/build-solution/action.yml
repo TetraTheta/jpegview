@@ -46,7 +46,7 @@ runs:
         # needed on older runners (or when testing locally): $env:Path += ";C:\Program Files\Git\usr\bin"
         Get-Command sed.exe | Format-List
         $GIT_SHORT_HASH=$(git.exe rev-parse --short "${{ github.sha }}")
-        $APPEND_VER_STR="\(~GHdevtest ${{ github.repository_owner }}\/$GIT_SHORT_HASH\)"
+        $APPEND_VER_STR="\(${{ github.repository_owner }}\/$GIT_SHORT_HASH\)"
         # " doesn't have to be escaped in linux but needs to be escaped in windows powershell with `, powershell also needs that extra \\\ when \\ will do in linux
         sed.exe -i -r -e "s/(#define JPEGVIEW_VERSION \`"[0-9, ]+)(\\\0\`")/\1 $APPEND_VER_STR\2/g" -e "s/(#define JPEGVIEW_TITLE \`"JPEGView)(\`")/\1 $APPEND_VER_STR\2/g" src/JPEGView/resource.h
         sed.exe -i -r -e "s/(\<Product.*ApplicationName\))/\1 $APPEND_VER_STR/g" src/JPEGView.Setup/Product.wxs
