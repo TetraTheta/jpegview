@@ -965,7 +965,7 @@ LRESULT CMainDlg::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOO
 		bHandled = true;
 		m_pFileList->SetNavigationMode(Helpers::NM_LoopSubDirectories);
 		GotoImage(POS_Next);
-// EDIT: Remove 'Start the slideshow' block
+	// EDIT: Remove 'Start the slideshow' block
 	} else if (wParam == VK_F1) {
 		bHandled = true;
 		ExecuteCommand(IDM_HELP);
