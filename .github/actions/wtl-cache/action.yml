@@ -3,7 +3,7 @@ description: Action to set up WTL includes by downloading and caching an officia
 
 # NOTE: although WTL is now a submodule, this is not reflected in this GH action
 #
-# While I would like to do a submodule clone with checkout@v3, there's no option
+# While I would like to do a submodule clone with checkout, there's no option
 # to check out only ONE submodule.  There's a lot of submodules in this project
 # which are not directly required for building, and that seems fairly inefficient.
 #
@@ -35,7 +35,7 @@ runs:
   steps:
     - name: WTL Cache - Restore Download
       # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
-      uses: actions/cache@v3
+      uses: actions/cache@v6
       with:
         # path where we would extract the WTL source files
         # NOTE: potential bug is that cache-name is not invalidated when wtl-url changes, which it should

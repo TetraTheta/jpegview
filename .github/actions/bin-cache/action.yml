@@ -24,7 +24,7 @@ runs:
       run: del /s *.lib *.dll
 
     - name: Setup Python (for dav1d build)
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v6
       with:
         # any version will do for right now, but it's safer to just have it set fixed to a version
         python-version: '3.10'
@@ -32,7 +32,7 @@ runs:
     - name: BIN Cache - Restore LIBs/DLLs from previous GH Action
       # https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
       id: cache-bin
-      uses: actions/cache@v3
+      uses: actions/cache@v6
       with:
         # cache key changes with every .gitmodules change, so you can run this again manually
         # but as long as the .gitmodules did not change, it won't try to rebuild
@@ -82,8 +82,17 @@ runs:
 
     # for speed improvements in some libs, libjpeg-turbo benefits
     - name: Setup NASM
-      # https://github.com/marketplace/actions/set-up-nasm
-      uses: ilammy/setup-nasm@v1
+      if: ${{ steps.cache-bin.outputs.cache-hit != 'true' }}
+      shell: powershell
+      run: |
+        $nasmVersion = "2.16.01"
+        $nasmRoot = Join-Path -Path $env:RUNNER_TEMP -ChildPath "nasm"
+        $nasmZip = Join-Path -Path $env:RUNNER_TEMP -ChildPath "nasm.zip"
+        Invoke-WebRequest -Uri "https://www.nasm.us/pub/nasm/releasebuilds/$nasmVersion/win64/nasm-$nasmVersion-win64.zip" -OutFile $nasmZip
+        Expand-Archive -Path $nasmZip -DestinationPath $nasmRoot
+        $nasmBin = Join-Path -Path $nasmRoot -ChildPath "nasm-$nasmVersion"
+        echo $nasmBin | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        & (Join-Path -Path $nasmBin -ChildPath "nasm.exe") -version
 
 
 

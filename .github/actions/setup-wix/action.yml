@@ -10,14 +10,22 @@ runs:
     #  https://github.community/t/set-path-for-wix-toolset-in-windows-runner/154708
     - name: Set WiX paths for candle and light
       shell: powershell
-      env:
-        WIX_PATH: ${{ env.wix }}
       run: |
-        #echo "$env:WIX_PATH\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        # https://github.community/t/set-path-for-wix-toolset-in-windows-runner/154708/3
-        $env:Path += ";C:\Program Files (x86)\WiX Toolset v3.11\bin"
-        #echo "$env:PATH"
-        echo "$env:WIX_PATH"
+        $wixBin = ""
+        if (-not [string]::IsNullOrWhiteSpace($env:WIX)) {
+          $wixBin = Join-Path -Path $env:WIX -ChildPath "bin"
+        }
+        if ([string]::IsNullOrWhiteSpace($wixBin) -or -not (Test-Path -Path $wixBin)) {
+          $wixBin = "C:\Program Files (x86)\WiX Toolset v3.14\bin"
+        }
+        if (-not (Test-Path -Path $wixBin)) {
+          $wixBin = "C:\Program Files (x86)\WiX Toolset v3.11\bin"
+        }
+        if (-not (Test-Path -Path $wixBin)) {
+          throw "WiX Toolset v3 was not found"
+        }
+        echo "$wixBin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        $env:Path += ";$wixBin"
         # check that they're found (old way)
         #where.exe candle.exe
         #where.exe light.exe
